@@ -46,6 +46,7 @@ LittlerootTown_OnTransition:
 	call_if_eq VAR_LITTLEROOT_RIVAL_STATE, 3, LittlerootTown_EventScript_SetRivalLeftForRoute103
 	call_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1, LittlerootTown_EventScript_HideMapNamePopup
 	call_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 2, LittlerootTown_EventScript_LeftLabAfterDexUpgrade
+	call_if_eq VAR_LITTLEROOT_TOWN_STATE, 3, LittlerootTown_EventScript_SetSuperRodFishermanPos
 	end
 
 LittlerootTown_EventScript_LeftLabAfterDexUpgrade::
@@ -83,6 +84,11 @@ LittlerootTown_EventScript_SetTwinPos::
 LittlerootTown_EventScript_SetTwinGuardingRoutePos::
 	setobjectxyperm LOCALID_LITTLEROOT_TWIN, 7, 2
 	setobjectmovementtype LOCALID_LITTLEROOT_TWIN, MOVEMENT_TYPE_FACE_DOWN
+	return
+
+LittlerootTown_EventScript_SetSuperRodFishermanPos::
+	setobjectxyperm LOCALID_LITTLEROOT_FISHERMAN, 16, 16
+	setobjectmovementtype LOCALID_LITTLEROOT_FISHERMAN, MOVEMENT_TYPE_FACE_UP
 	return
 
 LittlerootTown_EventScript_SetMomStandingInFrontOfDoorPos::
@@ -716,6 +722,31 @@ LittlerootTown_EventScript_MomReturnHomeFemale5::
 	waitdooranim
 	return
 
+LittlerootTown_EventScript_SuperRod::
+	lock
+	faceplayer
+	goto_if_set FLAG_RECEIVED_SUPER_ROD, LittlerootTown_EventScript_ReceivedSuperRod
+	msgbox LittlerootTown_Text_YouWantSuperRod, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LittlerootTown_EventScript_DeclineSuperRod
+	msgbox LittlerootTown_Text_SuperRodIsSuper, MSGBOX_DEFAULT
+	giveitem ITEM_SUPER_ROD
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
+	setflag FLAG_RECEIVED_SUPER_ROD
+	msgbox LittlerootTown_Text_TryDroppingRodInWater, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_EventScript_ReceivedSuperRod::
+	msgbox LittlerootTown_Text_GoodLuckFishingPokemon, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_EventScript_DeclineSuperRod::
+	msgbox LittlerootTown_Text_DontYouLikeToFish, MSGBOX_DEFAULT
+	release
+	end
+
+
 LittlerootTown_Movement_MomApproachPlayer0:
 	walk_up
 	walk_up
@@ -1014,3 +1045,24 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
 
+LittlerootTown_Text_YouWantSuperRod:
+	.string "Hey there, TRAINER!\n"
+	.string "What am I doing here?\p"
+	.string "Just fishing with my SUPER ROD.\n"
+	.string "Do you want to try?$"
+
+LittlerootTown_Text_GoodLuckFishingPokemon:
+	.string "Just relax and let the Feebas\n"
+	.string "come to you!$"
+
+LittlerootTown_Text_DontYouLikeToFish:
+	.string "Oh well, more fish for me.\n"
+	.string "Let me know if you change your mind!$"
+
+LittlerootTown_Text_SuperRodIsSuper:
+	.string "Awesome! Just toss this end into\n"
+	.string "the water and wait for some bites!$"
+
+LittlerootTown_Text_TryDroppingRodInWater:
+	.string "Try fishing anywhere you can,\n"
+	.string "you never know what you will find.$"
